@@ -10,14 +10,17 @@ from data_retrieve import *
 #long -> GLD
 #short -> GDX
 
-data = get_data(['GLD', 'GDX'], st='2006-05-23', end='2007-11-30')
-df1 = data['GLD']
-df2 = data['GDX']
+asset_1 = 'GLD'
+asset_2 = 'GDX'
+
+data = get_data([asset_1, asset_2], st='2006-05-23', end='2007-11-30')
+df1 = data[asset_1]
+df2 = data[asset_2]
 
 df1.columns = df1.columns.get_level_values(0)
 df2.columns = df2.columns.get_level_values(0)
 
-df = df1.merge(df2, how='left', on='Date', suffixes=['_GLD', '_GDX'])
+df = df1.merge(df2, how='left', on='Date', suffixes=['_'+asset_1, '_'+asset_2])
 
 df.sort_index(inplace=True)
 trainset = np.arange(0, 252)
@@ -27,7 +30,7 @@ df = df.iloc[
 
 ## Run cointegration (Engle-Granger) test
 
-coint_t, pvalue, crit_value = coint(df["Adj Close_GLD"], df["Adj Close_GDX"])
+coint_t, pvalue, crit_value = coint(df["Adj Close_"+asset_1], df["Adj Close_"+asset_2])
 print(
     coint_t,
     pvalue,
@@ -36,7 +39,7 @@ print(
 
 ## Determine Hedge ratio
 
-model = OLS(df["Adj Close_GLD"], df["Adj Close_GDX"])
+model = OLS(df["Adj Close_"+asset_1], df["Adj Close_"+asset_2])
 results = model.fit()
 hedgeRatio = results.params
 print("Hedge Ratio")
@@ -44,7 +47,7 @@ print(hedgeRatio)
 
 ##  spread = GLD - hedgeRatio*GDX
 
-spread = df["Adj Close_GLD"] - hedgeRatio[0] * df["Adj Close_GDX"]
+spread = df["Adj Close_"+asset_1] - hedgeRatio[0] * df["Adj Close_"+asset_2]
 print("Spread")
 plt.plot(spread)
 plt.show()
