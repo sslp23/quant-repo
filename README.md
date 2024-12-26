@@ -10,6 +10,7 @@ The repository includes implementations of fundamental concepts such as:
 
 - **Sharpe Ratio**: A measure of risk-adjusted return.
 - **Drawdown**: The decline from a historical peak in a trading account.
+- **Kelly Criteria**: To find the optimal leverage of a trading strategy in your portfolio.
 
 These codes are designed to simplify the process of analyzing and evaluating trading strategies.
 
